@@ -45,7 +45,7 @@ class WebHookAuthHttpClient {
                             authorization: signedJwt,
                         },
                     };
-                    const requestClient = parsedUrl.protocol === 'https' ? https_1.request : http_1.request;
+                    const requestClient = parsedUrl.protocol === 'https:' ? https_1.request : http_1.request;
                     const req = requestClient(parsedUrl.toString(), augmentedOptions, callback);
                     req.write(data);
                     req.end();
