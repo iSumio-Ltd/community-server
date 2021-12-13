@@ -2,6 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.WebHookAuthHttpClient = void 0;
 const http_1 = require("http");
+const https_1 = require("https");
+const url_1 = require("url");
 // eslint-disable-next-line import/no-unresolved
 const parse_1 = require("jose/jwk/parse");
 // eslint-disable-next-line import/no-unresolved
@@ -15,6 +17,7 @@ class WebHookAuthHttpClient {
         this.baseUrl = args.baseUrl;
     }
     call(url, options, data, callback) {
+        const parsedUrl = url instanceof url_1.URL ? url : new url_1.URL(url);
         this.jwksKeyGenerator
             .getPrivateJwks(PodJwksHttpHandler_1.POD_JWKS_KEY)
             .then((jwks) => {
@@ -25,7 +28,7 @@ class WebHookAuthHttpClient {
             parse_1.parseJwk(jwk, 'RS256')
                 .then((jwkKeyLike) => {
                 const jwtRaw = {
-                    htu: url,
+                    htu: parsedUrl.toString(),
                     htm: 'POST',
                 };
                 new sign_1.SignJWT(jwtRaw)
@@ -42,7 +45,8 @@ class WebHookAuthHttpClient {
                             authorization: signedJwt,
                         },
                     };
-                    const req = http_1.request(url, augmentedOptions, callback);
+                    const requestClient = parsedUrl.protocol === 'https' ? https_1.request : http_1.request;
+                    const req = requestClient(parsedUrl.toString(), augmentedOptions, callback);
                     req.write(data);
                     req.end();
                 })

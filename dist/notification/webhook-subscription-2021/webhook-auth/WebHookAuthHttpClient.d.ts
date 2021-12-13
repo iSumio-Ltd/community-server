@@ -1,6 +1,6 @@
 /// <reference types="node" />
 import type { RequestOptions, IncomingMessage } from 'http';
-import type { URL } from 'url';
+import { URL } from 'url';
 import type { HttpClient } from '../../../http/client/HttpClient';
 import type { JwksKeyGenerator } from '../../../identity/configuration/JwksKeyGenerator';
 export interface WebHookAuthHttpClientArgs {
